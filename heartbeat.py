@@ -8,14 +8,14 @@ CHECK_SERVER = 'www.baidu.com'
 
 
 def check_connect():
-    with socket.socket() as s:
-        s.settimeout(3)
-        try:
-            status = s.connect_ex((CHECK_SERVER, 443))
-            return status == 0
-        except Exception as e:
-            print(e)
-            return False
+    s = socket.socket()
+    s.settimeout(3)
+    try:
+        s.connect((CHECK_SERVER, 443))
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
 
 def check_online():
