@@ -31,7 +31,7 @@ except ImportError:
 
 def time2date(timestamp):
     time_arry = time.localtime(int(timestamp))
-    return time.strftime('%Y-%m-%d %H:%M:%S', time_arry)
+    return '%02d-%02d-%02d %02d:%02d:%02d'%( time_arry[0:6] )
 
 
 def humanable_bytes(num_byte):
