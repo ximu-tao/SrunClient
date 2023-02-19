@@ -1,13 +1,5 @@
 from srun import SrunClient
 import socket
-import logging
-
-logging.basicConfig(
-    format='%(asctime)s.%(msecs)03d [%(filename)s:%(lineno)d] %(message)s',
-    datefmt='## %Y-%m-%d %H:%M:%S'
-)
-logging.getLogger("heartbeat").setLevel(logging.INFO)
-logger = logging.getLogger("heartbeat")
 
 USERNAME = ''
 PASSWD = ''
@@ -31,7 +23,7 @@ def check_online():
     srun_client = SrunClient(print_log=False)
     # Use this method frequently to check online is not suggested!
     # if srun_client.check_online(): return
-    logger.info('NOT ONLINE, TRY TO LOGIN!')
+    print('NOT ONLINE, TRY TO LOGIN!')
     srun_client.username = USERNAME
     srun_client.passwd = PASSWD
     srun_client.login()
