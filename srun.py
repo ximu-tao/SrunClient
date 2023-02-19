@@ -1,5 +1,4 @@
 import time
-import getpass
 
 if bytes is str: input = raw_input
 
@@ -215,7 +214,7 @@ if __name__ == "__main__":
             srun_client.show_online()
         elif command == '2':
             srun_client.username = input('username: ')
-            srun_client.passwd = getpass.getpass('passwd: ')
+            srun_client.passwd = input('passwd: ')
         elif command == '3':
             srun_client.login()
         elif command == '4':
