@@ -28,16 +28,16 @@ ESP32/ESP32C3(已经过测试的)。
     >
     ```
 
-    2. 掉线自动重连
-        - 🍬**推荐**🍬 在 `main.py` 或 `boot.py` 中:
-        ```
-        # !!!注意: 在此之前，你应该先接入WIFI
-        import heartbeat
-        import machine
-        if not heartbeat.check_online():
-            heartbeat.try_login(USERNAME, PASSWD, SRUN_IP)
+2. 掉线自动重连
+    - 🍬**推荐**🍬 在 `main.py` 或 `boot.py` 中:
+    ```
+    # !!!注意: 在此之前，你应该先接入WIFI
+    import heartbeat
+    import machine
+    if not heartbeat.check_online():
+        heartbeat.try_login(USERNAME, PASSWD, SRUN_IP)
         
-        # 进入5分钟的深度睡眠以节约用电
-        machine.deepsleep(5*60*1000)
-        machine.reset()
-        ```
+    # 进入5分钟的深度睡眠以节约用电
+    machine.deepsleep(5*60*1000)
+    machine.reset()
+    ```
