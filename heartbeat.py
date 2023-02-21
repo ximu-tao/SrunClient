@@ -3,11 +3,11 @@ import socket
 
 USERNAME = ''
 PASSWD = ''
-
+SRUN_IP = '202.204.105.195'
 CHECK_SERVER = 'www.baidu.com'
 
 
-def check_connect():
+def check_online():
     s = socket.socket()
     s.settimeout(3)
     try:
@@ -18,21 +18,26 @@ def check_connect():
         return False
 
 
-def check_online():
-    if check_connect(): return
-    srun_client = SrunClient(print_log=False)
+def try_login( username, passwd, srun_ip ):
+    srun_client = SrunClient( username=username, passwd=passwd, srun_ip=srun_ip , print_log=False)
     # Use this method frequently to check online is not suggested!
     # if srun_client.check_online(): return
-    print('NOT ONLINE, TRY TO LOGIN!')
     srun_client.username = USERNAME
     srun_client.passwd = PASSWD
-    srun_client.login()
+    return srun_client.login()
+
+
+def main():
+    if check_online(): return
+    print('NOT ONLINE, TRY TO LOGIN!')
+    if try_login(USERNAME, PASSWD, SRUN_IP):
+        raise Exception("LOGIN FAILED!")
 
 
 if __name__ == "__main__":
-    check_online()
+    main()
     
 #     import time
 #     while 1:
-#         check_online()
+#         main()
 #         time.sleep(10)
