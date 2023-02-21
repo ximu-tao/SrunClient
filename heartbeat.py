@@ -30,7 +30,7 @@ def try_login( username, passwd, srun_ip ):
 def main():
     if check_online(): return
     print('NOT ONLINE, TRY TO LOGIN!')
-    if try_login(USERNAME, PASSWD, SRUN_IP):
+    if not try_login(USERNAME, PASSWD, SRUN_IP):
         raise Exception("LOGIN FAILED!")
 
 
