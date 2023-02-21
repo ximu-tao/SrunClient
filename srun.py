@@ -14,7 +14,6 @@ def data2formurlencoded( data ):
     return '&'.join( dict2list(data, "=") )
 
 def get_func(url, *args, **kwargs):
-    print( url )
     resp = requests.get(url, *args, **kwargs)
     return resp.text
 
@@ -58,17 +57,17 @@ def humanable_bytes2(num_byte):
 class SrunClient:
     
     name = 'CUGB'
-    srun_ip = '202.204.105.195'
 
     login_url = 'http://{}/cgi-bin/srun_portal'
     online_url = 'http://{}/cgi-bin/rad_user_info'
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36'}
 
-    def __init__(self, username=None, passwd=None, print_log=True):
+    def __init__(self, username=None, passwd=None, print_log=True , srun_ip='202.204.105.195'):
         self.username = username
         self.passwd = passwd
         self.print_log = print_log
         self.online_info = dict()
+        self.srun_ip = srun_ip
         self.check_online()
 
     def _encrypt(self, passwd):
@@ -186,6 +185,8 @@ class SrunClient:
             self._log(resp_text)
             return False
 
+    def set_srun_ip(self , srun_ip):
+        self.srun_ip = srun_ip
 
 def show_commands():
     wellcome = '############### Wellcome to Srun Client ###############'
