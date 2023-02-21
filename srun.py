@@ -1,8 +1,29 @@
 import time
-import socket_requests
 
 if bytes is str: input = raw_input
 
+import urequests as requests
+
+def dict2list( dict_ , sep ):
+    _list = list()
+    for item_name in dict_.keys():
+        _list.append( '%s%s%s'%( item_name , sep  , dict_.get( item_name ) )  )
+    return _list
+
+def data2formurlencoded( data ):
+    return '&'.join( dict2list(data, "=") )
+
+def get_func(url, *args, **kwargs):
+    print( url )
+    resp = requests.get(url, *args, **kwargs)
+    return resp.text
+
+def post_func(url, data, headers , *args, **kwargs):
+    if data is not None:
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        data = data2formurlencoded( data )
+    resp = requests.post(url, *args, data=data, headers=headers, **kwargs)
+    return resp.text
 
 def time2date(timestamp):
     time_arry = time.localtime(int(timestamp))
@@ -39,9 +60,8 @@ class SrunClient:
     name = 'CUGB'
     srun_ip = '202.204.105.195'
 
-    login_path = '/cgi-bin/srun_portal'
-    online_path = '/cgi-bin/rad_user_info'
-    # headers = {'User-Agent': 'SrunClient {}'.format(name)}
+    login_url = 'http://{}/cgi-bin/srun_portal'
+    online_url = 'http://{}/cgi-bin/rad_user_info'
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36'}
 
     def __init__(self, username=None, passwd=None, print_log=True):
@@ -49,7 +69,7 @@ class SrunClient:
         self.passwd = passwd
         self.print_log = print_log
         self.online_info = dict()
-        # self.check_online()
+        self.check_online()
 
     def _encrypt(self, passwd):
         column_key = [0,0,'d','c','j','i','h','g']
@@ -80,7 +100,7 @@ class SrunClient:
             print('[SrunClient {}] {}'.format(self.name, msg))
 
     def check_online(self):
-        resp_text = socket_requests.get(self.srun_ip, 80, self.online_path, headers=self.headers)
+        resp_text = get_func(self.online_url.format( self.srun_ip ), headers=self.headers)
         if 'not_online' in resp_text:
             self._log('###*** NOT ONLINE! ***###')
             return False
@@ -113,11 +133,9 @@ class SrunClient:
         print('=' * len(header))
 
     def login(self):
-        '''
         if self.check_online():
             self._log('###*** ALREADY ONLINE! ***###')
             return True
-            '''
         if not self.username or not self.passwd:
             self._log('###*** LOGIN FAILED! (username or passwd is None) ***###')
             self._log('username and passwd are required! (check username and passwd)')
@@ -132,7 +150,7 @@ class SrunClient:
             'mbytes': 0, 'minutes': 0,
             'ac_id': 1
             }
-        resp_text = socket_requests.post(self.srun_ip, 80, self.login_path, data=payload, headers=self.headers)
+        resp_text = post_func(self.login_url.format(self.srun_ip), data=payload, headers=self.headers)
         if 'login_ok' in resp_text:
             self._log('###*** LOGIN SUCCESS! ***###')
             self._log(resp_text)
@@ -155,7 +173,7 @@ class SrunClient:
             'username': self.online_info['username'],
             'type': 2
             }
-        resp_text = socket_requests.post(self.srun_ip, 80, self.login_path, data=payload, headers=self.headers)
+        resp_text = post_func(self.login_url.format(self.srun_ip) , data=payload, headers=self.headers)
         if 'logout_ok' in resp_text:
             self._log('###*** LOGOUT SUCCESS! ***###')
             return True
