@@ -21,9 +21,6 @@ def check_online():
 def try_login( username, passwd, srun_ip ):
     srun_client = SrunClient( username=username, passwd=passwd, srun_ip=srun_ip , print_log=False)
     # Use this method frequently to check online is not suggested!
-    # if srun_client.check_online(): return
-    srun_client.username = USERNAME
-    srun_client.passwd = PASSWD
     return srun_client.login()
 
 
