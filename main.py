@@ -1,12 +1,28 @@
 print("Start")
 
-
-import network
 import utime
 import machine
+import json
+import random
 
-pin2 = machine.Pin(12, machine.Pin.OUT)
-wlan = network.WLAN(network.STA_IF)
+import net
+
+configs = json.load(open("config.json", encoding='utf-8'))
+current_config = configs['config'][random.randint(0, len(configs['config']) - 1)]
+
+print(current_config)
+
+wifi_ssid = current_config['wifi_ssid']
+wifi_passwd = current_config['wifi_passwd']
+username = current_config['username']
+passwd = current_config['passwd']
+
+led_pin = 12
+
+deepsleep_time_ms = 60 * 5 * 1000
+
+pin2 = machine.Pin(led_pin, machine.Pin.OUT)
+
 
 def twinkle(num, interval):
     num *= 2
@@ -16,46 +32,34 @@ def twinkle(num, interval):
         num -= 1
 
 
-def connectWIFI( ssid, password ):
+def connectWIFI():
     pin2.value(1)
 
-    if wlan.active():
-        wlan.active(False)
+    net.connectWIFI(wifi_ssid, wifi_passwd)
 
-    wlan.active(True)
-    try_count = 0
-    while try_count < 4:
-        try:
-            wlan.connect(ssid, password)
-            print('connectWIFI')
-            if wlan.isconnected():
-                break
-            utime.sleep(3)
-        except Exception as e:
-            print(e)
-            try_count += 1
-
-    if wlan.isconnected():
+    if net.isconnected():
         twinkle(3, 1000)
     else:
+        pin2.value(1)
+
+    if not net.isconnected():
         twinkle(-1, 200)
 
 
-connectWIFI( "wifi_ssid", "wifi_passwd" )
+connectWIFI()
 
 import heartbeat
 
 if not heartbeat.check_online():
     print('not online')
-    heartbeat.try_login('username', 'passwd', '202.204.105.195')
+    heartbeat.try_login(username, passwd, '10.10.10.3')
 else:
     print('is online')
 twinkle(5, 200)
 
 print("to deepsleep")
-machine.deepsleep(60 * 5 * 1000)
+machine.deepsleep(deepsleep_time_ms)
 
 print("Main End")
 
 machine.reset()
-
