@@ -40,10 +40,9 @@ def connectWIFI():
     if net.isconnected():
         twinkle(3, 1000)
     else:
-        pin2.value(1)
-
-    if not net.isconnected():
-        twinkle(-1, 200)
+        # 无法连接WIFI，快速闪烁一分钟后重启设备
+        twinkle(150 , 200)
+        machine.reset()
 
 
 connectWIFI()
